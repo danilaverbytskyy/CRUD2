@@ -1,7 +1,6 @@
 <?php
 
 $url = $_SERVER['REQUEST_URI'];
-$controller = [];
 if($url === '/') {
     require 'views/sign-up.php';
 }
@@ -16,6 +15,9 @@ else if($url === '/show') {
 }
 else if($url === '/edit') {
     require 'views/edit.php';
+}
+else if($url === '/register') {
+    require 'views/register.php';
 }
 else {
     echo 'Error 404';

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if(isset($_SESSION['user'])) {
+if (isset($_SESSION['user'])) {
     header('Location: /main');
 }
 ?>
@@ -30,7 +30,7 @@ if(isset($_SESSION['user'])) {
         margin: 0 auto;
         background: rgba(0, 186, 255, 0.77);
         width: 470px;
-        height:470px;
+        height: 470px;
         padding: 20px;
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.82);
     }
@@ -99,7 +99,7 @@ if(isset($_SESSION['user'])) {
 </head>
 <body>
 <br>
-<form action="../../vendor/register.php" method="post" enctype="multipart/form-data">
+<form action="/register" method="post" enctype="multipart/form-data">
     <center><h2 title="Форма регистрации">Регистрация</h2></center>
     <div class="group">
         <label for="name">Имя:</label>
@@ -111,7 +111,7 @@ if(isset($_SESSION['user'])) {
     </div>
     <div class="group">
         <label for="password">Пароль:</label>
-        <input id="password" name="password"  type="text" required>
+        <input id="password" name="password" type="text" required>
     </div>
     <div class="group">
         <center>
@@ -119,13 +119,13 @@ if(isset($_SESSION['user'])) {
         </center>
     </div>
     <center>
-        <div>Уже есть аккаунт? <a href="/log-in">Войти</a> </div>
+        <div>Уже есть аккаунт? <a href="/log-in">Войти</a></div>
     </center>
     <?php
-        if (isset($_SESSION['message'])) {
-            echo '<center><p class="msg"> ' . $_SESSION['message'] . ' </p></center>';
-        }
-        unset($_SESSION['message']);
+    if (isset($_SESSION['message'])) {
+        echo '<center><p class="msg"> ' . $_SESSION['message'] . ' </p></center>';
+    }
+    unset($_SESSION['message']);
     ?>
 </form>
 </body>

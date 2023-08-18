@@ -99,7 +99,7 @@ if(isset($_SESSION['user'])) {
 </head>
 <body>
 <br>
-<form action="../../vendor/register.php" method="post" enctype="multipart/form-data">
+<form action="/register" method="post" enctype="multipart/form-data">
     <center><h2 title="Форма регистрации">Вход</h2></center>
     <div class="group">
         <label for="email">Почта:</label>
