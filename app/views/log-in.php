@@ -99,7 +99,7 @@ if(isset($_SESSION['user'])) {
 </head>
 <body>
 <br>
-<form action="/register" method="post" enctype="multipart/form-data">
+<form action="/enter" method="post" enctype="multipart/form-data">
     <center><h2 title="Форма регистрации">Вход</h2></center>
     <div class="group">
         <label for="email">Почта:</label>
@@ -118,10 +118,10 @@ if(isset($_SESSION['user'])) {
         <div>Еще нет аккаунта? <a href="/">Зарегистрироваться</a> </div>
     </center>
     <?php
-    if (isset($_SESSION['message'])) {
-        echo '<center><p class="msg"> ' . $_SESSION['message'] . ' </p></center>';
-    }
-    unset($_SESSION['message']);
+        if (isset($_SESSION['message'])) {
+            echo '<center><p class="msg"> ' . $_SESSION['message'] . ' </p></center>';
+        }
+        unset($_SESSION['message']);
     ?>
 </form>
 </body>

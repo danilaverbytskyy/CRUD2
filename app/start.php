@@ -17,7 +17,10 @@ else if($url === '/edit') {
     require 'views/edit.php';
 }
 else if($url === '/register') {
-    require 'views/register.php';
+    require '../vendor/register.php';
+}
+else if($url === '/enter') {
+    require '../vendor/enter.php';
 }
 else {
     echo 'Error 404';

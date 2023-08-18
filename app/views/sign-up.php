@@ -122,10 +122,10 @@ if (isset($_SESSION['user'])) {
         <div>Уже есть аккаунт? <a href="/log-in">Войти</a></div>
     </center>
     <?php
-    if (isset($_SESSION['message'])) {
-        echo '<center><p class="msg"> ' . $_SESSION['message'] . ' </p></center>';
-    }
-    unset($_SESSION['message']);
+        if (isset($_SESSION['message'])) {
+            echo '<center><p class="msg"> ' . $_SESSION['message'] . ' </p></center>';
+        }
+        unset($_SESSION['message']);
     ?>
 </form>
 </body>

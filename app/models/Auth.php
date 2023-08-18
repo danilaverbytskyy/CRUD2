@@ -12,8 +12,7 @@ class Auth {
         $this->queryBuilder = $queryBuilder;
     }
     public function redirect(string $path) : void {
-        $new_url = "crud" . $path;
-        header('Location: ' . $new_url);
+        header('Location: ' . $path);
     }
 
     /**
@@ -35,10 +34,10 @@ class Auth {
     public function login(string $table, array $data) : bool {
         $data = $this->secureInput($data);
         if ($this->isIncludeInvalidSymbols($data)) {
-            return false;
+            throw new InvalidSymbolsException();
         }
         $data = $this->queryBuilder->convertToDatabaseFormat($data);
-        return $this->isInTable($table, $data);
+        return $this->queryBuilder->isInTable($table, $data);
     }
 
     public function logout() : void {
