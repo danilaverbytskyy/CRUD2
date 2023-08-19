@@ -3,26 +3,40 @@
 session_start();
 
 use App\Exceptions\InvalidSymbolsException;
+use App\Exceptions\NotFoundDataException;
+use App\Exceptions\WrongPasswordException;
 use App\models\Auth;
 use App\models\QueryBuilder;
+
+$queryBuilder = new QueryBuilder();
+$auth = new Auth($queryBuilder);
+
+if(isset($_SESSION['user'])) {
+    $auth->redirect('/main');
+}
 
 if(empty($_POST)) {
     echo 'Error 402';
     die;
 }
 
-$queryBuilder = new QueryBuilder();
-$auth = new Auth($queryBuilder);
 try {
     $auth->login("users", $_POST);
     $_SESSION['message'] = 'Вы успешно вошли';
+    $userInput = $auth->secureInput($_POST);
+    $userInformation = $queryBuilder->getOne('users', $userInput);
     $_SESSION['user'] = [
-      'name' => $_POST['name'],
-        'surname' => $_POST['surname']
+        'name' => $userInformation['name'],
+        'email' => $userInformation['email']
     ];
     $auth->redirect('/main');
-} catch (InvalidSymbolsException $exception) {
+} catch (InvalidSymbolsException $e) {
     $_SESSION['message'] = 'Вы ввели недопустимые символы';
     $auth->redirect('/log-in');
+} catch (NotFoundDataException $e) {
+    $_SESSION['message'] = 'Нет такого пользователя';
+    $auth->redirect('/log-in');
+} catch (WrongPasswordException $e) {
+    $_SESSION['message'] = 'Вы ввели неправильный пароль';
+    $auth->redirect('/log-in');
 }
-
