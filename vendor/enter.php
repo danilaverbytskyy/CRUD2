@@ -45,3 +45,4 @@ try {
     $_SESSION['message'] = 'Вы ввели неправильный пароль';
     $auth->redirect('/log-in');
 }
+
