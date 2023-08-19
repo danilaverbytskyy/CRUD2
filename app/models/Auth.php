@@ -25,7 +25,11 @@ class Auth {
             throw new InvalidSymbolsException();
         }
         $data = $this->queryBuilder->convertToDatabaseFormat($data);
-        if ($this->queryBuilder->isInTable($table, $data)) {
+        $userInformation = [
+            'name' => $data['name'],
+            'email' => $data['email']
+        ];
+        if ($this->queryBuilder->isInTable($table, $userInformation)) {
             throw new AlreadyLoggedInException();
         }
         $this->queryBuilder->storeOne($table, $data);

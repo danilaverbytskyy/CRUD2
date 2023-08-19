@@ -1,5 +1,12 @@
 <?php
 
+session_start();
+
+if(empty($_POST)) {
+    echo 'массив Post пустой';
+    die;
+}
+
 use App\Exceptions\AlreadyLoggedInException;
 use App\Exceptions\InvalidSymbolsException;
 use App\models\Auth;
@@ -12,12 +19,11 @@ try {
     $auth->register("users", $_POST);
     $_SESSION['message'] = 'Вы успешно зарегистрировались';
     $auth->redirect('/log-in');
-    exit;
 } catch (AlreadyLoggedInException $e) {
     $_SESSION['message'] = 'Вы уже зарегистрированы';
+    $auth->redirect('/');
 } catch (InvalidSymbolsException $e) {
     $_SESSION['message'] = 'Вы ввели недопустимые символы';
+    $auth->redirect('/');
 }
-$auth->redirect('/');
-exit;
 ?>
