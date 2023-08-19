@@ -64,6 +64,9 @@ class QueryBuilder {
         return $result;
     }
 
+    /**
+     * @throws NotFoundDataException
+     */
     public function getOne(string $table, array $data): array {
         $keys = array_keys($data);
         $condition = "";
@@ -85,21 +88,18 @@ class QueryBuilder {
         $data = $this->convertToDatabaseFormat($data);
         try {
             $this->getOne($table, $data);
-            return true;
-        } catch (NotFoundDataException $exception) {
+        } catch (NotFoundDataException $e) {
             return false;
         }
+        return true;
     }
 
     public function convertToDatabaseFormat(array $data): array {
         foreach ($data as $key => $value) {
             if ($key === 'password') {
                 continue;
-                $value = sha1($value);
             }
-            else {
-                $value = mb_strtoupper($value);
-            }
+            $value = mb_strtoupper($value);
         }
         return $data;
     }

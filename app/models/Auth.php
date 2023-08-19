@@ -4,6 +4,8 @@ namespace App\models;
 
 use App\Exceptions\AlreadyLoggedInException;
 use App\Exceptions\InvalidSymbolsException;
+use App\Exceptions\NotFoundDataException;
+use App\Exceptions\WrongPasswordException;
 
 class Auth {
     private QueryBuilder $queryBuilder;
@@ -35,13 +37,26 @@ class Auth {
         $this->queryBuilder->storeOne($table, $data);
     }
 
-    public function login(string $table, array $data) : bool {
+    /**
+     * @throws InvalidSymbolsException
+     * @throws NotFoundDataException
+     * @throws WrongPasswordException
+     */
+    public function login(string $table, array $data) : void {
         $data = $this->secureInput($data);
         if ($this->isIncludeInvalidSymbols($data)) {
             throw new InvalidSymbolsException();
         }
         $data = $this->queryBuilder->convertToDatabaseFormat($data);
-        return $this->queryBuilder->isInTable($table, $data);
+        if ($this->queryBuilder->isInTable($table, $data) === false) {
+            $userInformation = [
+                'email' => $data['email'],
+            ];
+            if($this->queryBuilder->isInTable($table, $userInformation)) {
+                throw new WrongPasswordException();
+            }
+            throw new NotFoundDataException();
+        }
     }
 
     public function logout() : void {
@@ -60,9 +75,12 @@ class Auth {
         throw new \Exception("cannot get full name");
     }
 
-    private function secureInput(array $data): array {
+    public function secureInput(array $data): array {
         foreach ($data as $element) {
             $element = htmlspecialchars(trim($element));
+        }
+        if(isset($data['password'])) {
+            $data['password'] = sha1($data['password']);
         }
         return $data;
     }
