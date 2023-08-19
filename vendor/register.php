@@ -3,7 +3,7 @@
 session_start();
 
 if(empty($_POST)) {
-    echo 'массив Post пустой';
+    echo 'Error 400';
     die;
 }
 
@@ -12,8 +12,7 @@ use App\Exceptions\InvalidSymbolsException;
 use App\models\Auth;
 use App\models\QueryBuilder;
 
-$pdo = new PDO("mysql:host=localhost; dbname=CRUD", "root", "");
-$queryBuilder = new QueryBuilder($pdo);
+$queryBuilder = new QueryBuilder();
 $auth = new Auth($queryBuilder);
 try {
     $auth->register("users", $_POST);

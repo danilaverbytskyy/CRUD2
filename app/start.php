@@ -22,6 +22,9 @@ else if($url === '/register') {
 else if($url === '/enter') {
     require '../vendor/enter.php';
 }
+else if($url === '/logout') {
+    require '../vendor/logout.php';
+}
 else {
     echo 'Error 404';
 }

@@ -7,7 +7,6 @@ if (isset($_SESSION['user'])) {
 ?>
 
 <style>
-    <?php include "../../bootstrap/css/bootstrap.min.css" ?>
     <?php include "css/sign-up.css" ?>
 </style>
 
@@ -18,7 +17,7 @@ if (isset($_SESSION['user'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Регистрация</title>
-    <link rel="stylesheet" href="css/sign-up.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 </head>
 <body>
 <br>

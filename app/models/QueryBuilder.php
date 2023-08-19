@@ -3,14 +3,14 @@
 namespace App\models;
 
 use App\Exceptions\NotFoundByIdException;
-use App\Exceptions\NotFoundException;
+use App\Exceptions\NotFoundDataException;
 use PDO;
 
 class QueryBuilder {
     private PDO $pdo;
 
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = new PDO("mysql:host=localhost; dbname=CRUD", "root", "");
     }
 
     public function storeOne(string $table, array $data): void {
@@ -30,6 +30,20 @@ class QueryBuilder {
         $statement->execute([
             'id' => $id
         ]);
+    }
+
+    /**
+     * @throws NotFoundDataException
+     */
+    function getAll(string $table) {
+        $sql = "SELECT * FROM $table";
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute();
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+        if($results === false) {
+            throw new NotFoundDataException();
+        }
+        return $results;
     }
 
     /**
@@ -62,7 +76,7 @@ class QueryBuilder {
         $statement->execute($data);
         $result = $statement->fetch();
         if ($result === false) {
-            throw new NotFoundException();
+            throw new NotFoundDataException();
         }
         return $result;
     }
@@ -72,7 +86,7 @@ class QueryBuilder {
         try {
             $this->getOne($table, $data);
             return true;
-        } catch (NotFoundException $exception) {
+        } catch (NotFoundDataException $exception) {
             return false;
         }
     }

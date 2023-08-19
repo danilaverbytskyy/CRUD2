@@ -7,12 +7,11 @@ use App\models\Auth;
 use App\models\QueryBuilder;
 
 if(empty($_POST)) {
-    echo 'массив Post пустой';
+    echo 'Error 402';
     die;
 }
 
-$pdo = new PDO("mysql:host=localhost; dbname=CRUD", "root", "");
-$queryBuilder = new QueryBuilder($pdo);
+$queryBuilder = new QueryBuilder();
 $auth = new Auth($queryBuilder);
 try {
     $auth->login("users", $_POST);
