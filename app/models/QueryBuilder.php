@@ -101,4 +101,21 @@ class QueryBuilder {
         }
         return $result;
     }
+
+    /**
+     * @throws NotFoundDataException
+     */
+    public function getOneById(string $table, int $id) {
+        $whoseId = substr($table, 0, strlen($table)-1);
+        $sql = "SELECT * FROM $table WHERE {$whoseId}_id = :id";
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute([
+            'id' => $id
+        ]);
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($result === false) {
+            throw new NotFoundDataException();
+        }
+        return $result;
+    }
 }

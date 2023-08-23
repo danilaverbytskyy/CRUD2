@@ -10,8 +10,9 @@ else if($url === '/main') {
 else if($url === '/log-in') {
     require 'views/log-in.php';
 }
-else if($url === '/show') {
-    require '/views/show.php';
+else if(preg_match('/^\/show\/(\d+)$/', $url, $matches)) {
+    $_GET['task_id'] = $matches[1];
+    require 'views/show.php';
 }
 else if($url === '/edit') {
     require 'views/edit.php';

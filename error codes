@@ -1,5 +1,5 @@
-400
+400 - This ain't yo task
 401 - NotFoundDataException
 402 - $_POST is empty
-403
+403 - NotFoundDataException in show.php
 404 - no such address in start.php
