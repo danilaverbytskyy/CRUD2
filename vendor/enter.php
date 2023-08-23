@@ -22,7 +22,6 @@ if(empty($_POST)) {
 
 try {
     $auth->login("users", $_POST);
-    $_SESSION['message'] = 'Вы успешно вошли';
     $userInput = [
         'email' => $_POST['email'],
         'password' => $_POST['password']

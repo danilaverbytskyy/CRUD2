@@ -1,20 +1,24 @@
 <?php
 
+use App\Exceptions\NotFoundByIdException;
 use App\Exceptions\NotFoundDataException;
+use App\models\Auth;
 use App\models\QueryBuilder;
 
 session_start();
 
+$queryBuilder = new QueryBuilder();
+$auth = new Auth($queryBuilder);
+
 if(isset($_SESSION['user']) === false) {
-    header("Location: /");
+    $auth->redirect('/');
 }
 
-$queryBuilder = new QueryBuilder();
 try {
-    $tasks = $queryBuilder->getAll("users");
+    $tasks = $queryBuilder->getAllByUserId("tasks", $_SESSION['user']['user_id']);
+    $_SESSION['message'] = "Welcome, " . $_SESSION['user']['name'] . '!';
 } catch (NotFoundDataException $e) {
-    echo 'Error 401';
-    die;
+    $_SESSION['message'] = 'You have no tasks yet :(';
 }
 ?>
 
@@ -33,35 +37,40 @@ try {
 <body>
 <div class="container">
     <div class="row">
+        <div class="text-end">
         <a href="/logout">Log out</a>
+        </div>
         <div class="col-md-12">
             <h1>All Tasks</h1>
             <a href="/create-task" class="btn btn-success">Add Task</a>
-            <table class="table">
+            <?php echo '<br>' . $_SESSION['message']?>
+            <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Actions</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
-
                 <tbody>
-                <?php foreach($tasks as $task):?>
-                    <tr>
-                        <td><?= $task['id'];?></td>
-                        <td><?= $task['title'];?></td>
-                        <td>
-                            <a href="show.php?id=<?= $task['id'];?>" class="btn btn-info">
-                                Show
-                            </a>
-                            <a href="edit.php?id=<?= $task['id'];?>" class="btn btn-warning">
-                                Edit
-                            </a>
-                            <a onclick="return confirm('are you sure?');" href="delete.php?id=<?= $task['id'];?>" class="btn btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                <?php endforeach;?>
+                <?php if (isset($tasks)):?>
+                    <?php $taskCounter = 0;?>
+                    <?php foreach($tasks as $task):?>
+                        <tr>
+                            <td><?= ++$taskCounter;?></td>
+                            <td><?= $task['title'];?></td>
+                            <td>
+                                <a href="/show?id=<?= $task['task_id'];?>" class="btn btn-info">
+                                    Show
+                                </a>
+                                <a href=/"edit?id=<?= $task['task_id'];?>" class="btn btn-warning">
+                                    Edit
+                                </a>
+                                <a onclick="return confirm('are you sure?');" href="/delete?id=<?= $task['task_id'];?>" class="btn btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
+                <?php endif?>
                 </tbody>
             </table>
         </div>
