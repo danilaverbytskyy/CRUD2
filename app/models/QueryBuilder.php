@@ -47,24 +47,6 @@ class QueryBuilder {
     }
 
     /**
-     * @throws NotFoundByIdException
-     */
-    public function getOneById(string $table, int $id): array {
-        $table_id = substr($table, 0, strlen($table) - 1);
-        $table_id .= '_id';
-        $sql = "SELECT * FROM $table WHERE $table_id=:id";
-        $statement = $this->pdo->prepare($sql);
-        $statement->execute([
-            'id' => $id
-        ]);
-        $result = $statement->fetch();
-        if ($result === null) {
-            throw new NotFoundByIdException();
-        }
-        return $result;
-    }
-
-    /**
      * @throws NotFoundDataException
      */
     public function getOne(string $table, array $data): array {
@@ -102,5 +84,21 @@ class QueryBuilder {
             $value = mb_strtoupper($value);
         }
         return $data;
+    }
+
+    /**
+     * @throws NotFoundDataException
+     */
+    public function getAllByUserId(string $table, int $userId) : array {
+        $sql = "SELECT * FROM $table WHERE user_id=:id";
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute([
+            'id' => $userId
+        ]);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        if ($result === false) {
+            throw new NotFoundDataException();
+        }
+        return $result;
     }
 }
