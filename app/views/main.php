@@ -37,9 +37,7 @@ try {
 <body>
 <div class="container">
     <div class="row">
-        <div class="text-end">
         <a href="/logout">Log out</a>
-        </div>
         <div class="col-md-12">
             <h1>All Tasks</h1>
             <a href="/create-task" class="btn btn-success">Add Task</a>
