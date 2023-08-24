@@ -17,14 +17,14 @@ $taskId = intval($_GET['task_id']);
 
 try {
     $task = $queryBuilder->getOneById("tasks", $taskId);
-    if($task['user_id']!==$_SESSION['user']['user_id']) {
-        echo 'Error 400';
-        echo '<br>';
-        echo "<a href='/main'>Go Back</a>";
-        die;
-    }
 } catch (NotFoundDataException $e) {
     echo 'Error 403';
+    echo '<br>';
+    echo "<a href='/main'>Go Back</a>";
+    die;
+}
+if($task['user_id']!==$_SESSION['user']['user_id']) {
+    echo 'Error 400';
     echo '<br>';
     echo "<a href='/main'>Go Back</a>";
     die;
@@ -49,7 +49,7 @@ try {
         <div class="col-md-12">
             <?php if (isset($task)):?>
                 <h1><?= $task['title'];?></h1>
-                <p>
+                <p style="white-space: pre-line">
                     <?= $task['content'];?>
                 </p>
             <?php endif;?>

@@ -2,6 +2,7 @@
 
 namespace App\models;
 
+use App\Exceptions\NotFoundByIdException;
 use App\Exceptions\NotFoundDataException;
 use PDO;
 
@@ -39,7 +40,7 @@ class QueryBuilder {
         $statement = $this->pdo->prepare($sql);
         $statement->execute();
         $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if($results === false) {
+        if(empty($results)) {
             throw new NotFoundDataException();
         }
         return $results;
@@ -116,5 +117,24 @@ class QueryBuilder {
             throw new NotFoundDataException();
         }
         return $result;
+    }
+
+    /**
+     * @throws NotFoundByIdException
+     */
+    public function updateOneById(string $table, int $id, array $newInformation) : void {
+        $whoseId = substr($table,0,strlen($table)-1);
+
+        $fields = '';
+        foreach($newInformation as $key => $value) {
+            $fields .= $key . "=:" . $key . ",";
+        }
+        $fields = rtrim($fields, ',');
+        $sql = "UPDATE $table SET $fields WHERE {$whoseId}_id=$id";
+        $statement = $this->pdo->prepare($sql);
+        $result = $statement->execute($newInformation);
+        if($result === false) {
+            throw new NotFoundByIdException();
+        }
     }
 }

@@ -16,9 +16,12 @@ if(isset($_SESSION['user']) === false) {
 
 try {
     $tasks = $queryBuilder->getAllByUserId("tasks", $_SESSION['user']['user_id']);
-    $_SESSION['message'] = "Welcome, " . $_SESSION['user']['name'] . '!';
 } catch (NotFoundDataException $e) {
     $_SESSION['message'] = 'You have no tasks yet :(';
+}
+
+if(isset($_SESSION['message']) === false) {
+    $_SESSION['message'] = "Welcome, " . $_SESSION['user']['name'] . '!';
 }
 ?>
 

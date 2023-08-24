@@ -36,6 +36,10 @@ else if(preg_match('/^\/edit\/(\d+)$/', $url, $matches)) {
     $_GET['task_id'] = $matches[1];
     require 'views/edit-task-page.php';
 }
+else if(preg_match('/^\/edit-task\/(\d+)$/', $url, $matches)) {
+    $_GET['task_id'] = $matches[1];
+    require '../vendor/edit-task.php';
+}
 else if(preg_match('/^\/delete\/(\d+)$/', $url, $matches)) {
     $_GET['task_id'] = $matches[1];
     require '../vendor/delete-task.php';
