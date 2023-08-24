@@ -41,6 +41,7 @@ if(isset($_SESSION['user']) === false) {
                     <button class="btn btn-success" type="submit">Submit</button>
                 </div>
             </form>
+            <a href="/main">Go Back</a>
         </div>
     </div>
 </div>

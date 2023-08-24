@@ -61,10 +61,10 @@ try {
                                 <a href="/show/<?= $task['task_id'];?>" class="btn btn-info">
                                     Show
                                 </a>
-                                <a href=/"edit/id=<?= $task['task_id'];?>" class="btn btn-warning">
+                                <a href="/edit/<?= $task['task_id'];?>" class="btn btn-warning">
                                     Edit
                                 </a>
-                                <a onclick="return confirm('are you sure?');" href="/delete/id=<?= $task['task_id'];?>" class="btn btn-danger">Delete</a>
+                                <a onclick="return confirm('are you sure?');" href="/delete/<?= $task['task_id'];?>" class="btn btn-danger">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach;?>

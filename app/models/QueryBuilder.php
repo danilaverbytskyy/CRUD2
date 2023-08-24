@@ -2,7 +2,6 @@
 
 namespace App\models;
 
-use App\Exceptions\NotFoundByIdException;
 use App\Exceptions\NotFoundDataException;
 use PDO;
 
@@ -96,7 +95,7 @@ class QueryBuilder {
             'id' => $userId
         ]);
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if ($result === false) {
+        if (empty($result)) {
             throw new NotFoundDataException();
         }
         return $result;
