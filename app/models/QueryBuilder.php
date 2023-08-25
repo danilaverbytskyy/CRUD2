@@ -122,17 +122,16 @@ class QueryBuilder {
     /**
      * @throws NotFoundByIdException
      */
-    public function updateOneById(string $table, int $id, array $newInformation) : void {
+    public function updateOneById(string $table, int $id, array $updatingInformation) : void {
         $whoseId = substr($table,0,strlen($table)-1);
-
         $fields = '';
-        foreach($newInformation as $key => $value) {
+        foreach($updatingInformation as $key => $value) {
             $fields .= $key . "=:" . $key . ",";
         }
         $fields = rtrim($fields, ',');
         $sql = "UPDATE $table SET $fields WHERE {$whoseId}_id=$id";
         $statement = $this->pdo->prepare($sql);
-        $result = $statement->execute($newInformation);
+        $result = $statement->execute($updatingInformation);
         if($result === false) {
             throw new NotFoundByIdException();
         }
