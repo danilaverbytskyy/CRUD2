@@ -13,11 +13,13 @@ $auth = new Auth($queryBuilder);
 
 if(isset($_SESSION['user'])) {
     $auth->redirect('/main');
+    exit;
 }
 
-if(empty($_POST)) {
-    echo 'Error 402';
-    die;
+if($auth->isCorrectEmail($_POST['email']) === false) {
+    $_SESSION['message'] = 'Неккоректный email';
+    $auth->redirect('/log-in');
+    exit;
 }
 
 try {
@@ -44,4 +46,3 @@ try {
     $_SESSION['message'] = 'Вы ввели неправильный пароль';
     $auth->redirect('/log-in');
 }
-

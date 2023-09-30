@@ -86,13 +86,20 @@ class Auth {
     }
 
     private function isIncludeInvalidSymbols(array $data): bool {
-        $invalidSymbols = "?#<>%^/@ ";
+        $invalidSymbols = "?#<>%^/ ";
         foreach ($data as $element) {
             if (strpbrk($element, $invalidSymbols) !== false) {
                 return true;
             }
         }
         return false;
+    }
+
+    public function isCorrectEmail(string $email) : bool {
+        if(filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            return false;
+        }
+        return true;
     }
 }
 ?>
