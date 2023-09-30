@@ -1,16 +1,14 @@
 <?php
 
 use App\Exceptions\NotFoundDataException;
-use App\models\Auth;
 use App\models\QueryBuilder;
 
 session_start();
 
-$queryBuilder = new QueryBuilder();
-$auth = new Auth($queryBuilder);
+$queryBuilder = new QueryBuilder("CRUD2");
 
 if (isset($_SESSION['user']) === false) {
-    $auth->redirect('/');
+    header('Location: /');
 }
 
 try {

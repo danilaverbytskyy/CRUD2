@@ -4,6 +4,8 @@ use App\Exceptions\NotFoundDataException;
 use App\models\Auth;
 use App\models\QueryBuilder;
 
+require 'vendor/autoload.php';
+
 session_start();
 
 $queryBuilder = new QueryBuilder();

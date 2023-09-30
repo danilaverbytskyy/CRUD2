@@ -9,8 +9,8 @@ use PDO;
 class QueryBuilder {
     private PDO $pdo;
 
-    public function __construct() {
-        $this->pdo = new PDO("mysql:host=localhost; dbname=CRUD", "root", "");
+    public function __construct(string $dbName) {
+        $this->pdo = new PDO("mysql:host=localhost; dbname=$dbName", "root", "");
     }
 
     public function storeOne(string $table, array $data): void {

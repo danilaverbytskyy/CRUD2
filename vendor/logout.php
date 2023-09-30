@@ -1,19 +1,24 @@
 <?php
 
-session_start();
+use Delight\Auth\Auth;
+use Delight\Auth\NotLoggedInException;
 
-use App\Exceptions\InvalidSymbolsException;
-use App\models\Auth;
-use App\models\QueryBuilder;
-
-$queryBuilder = new QueryBuilder();
-$auth = new Auth($queryBuilder);
-
-if(isset($_SESSION['user']) === false) {
-    $auth->redirect('/log-in');
+if(session_status() == false) {
+    session_start();
 }
 
+require 'autoload.php';
+
+$db = new PDO('mysql:dbname=CRUD2;host=localhost;charset=utf8mb4', 'root', '');
+
+$auth = new Auth($db);
+try {
+    $auth->logOutEverywhere();
+}
+catch (NotLoggedInException $e) {
+    die('Not logged in');
+}
 unset($_SESSION['user']);
 $_SESSION['message'] = 'Вы успешно вышли';
-$auth->redirect('/log-in');
+header('Location: /log-in');
 exit;

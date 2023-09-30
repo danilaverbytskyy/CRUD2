@@ -5,6 +5,8 @@ use App\models\QueryBuilder;
 
 session_start();
 
+require 'vendor/autoload.php';
+
 $queryBuilder = new QueryBuilder();
 $auth = new Auth($queryBuilder);
 
