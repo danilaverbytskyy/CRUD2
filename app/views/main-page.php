@@ -1,11 +1,15 @@
 <?php
 
 use App\Exceptions\NotFoundDataException;
+use App\models\Auth;
 use App\models\QueryBuilder;
 
 session_start();
 
 $queryBuilder = new QueryBuilder("CRUD2");
+$db = new PDO('mysql:dbname=CRUD2;host=localhost;charset=utf8mb4', 'root', '');
+$myAuth = new Auth($queryBuilder);
+$auth = new Delight\Auth\Auth($db);
 
 if (isset($_SESSION['user']) === false) {
     header('Location: /');
@@ -13,7 +17,7 @@ if (isset($_SESSION['user']) === false) {
 
 try {
     $tasks = $queryBuilder->getAllByUserId("tasks", $_SESSION['user']['user_id']);
-    $_SESSION['message'] = "Welcome, " . $_SESSION['user']['name'] . '!';
+    $_SESSION['message'] = "Welcome, " . $auth->getUsername() . '!';
 } catch (NotFoundDataException $e) {
     $_SESSION['message'] = 'You have no tasks yet :(';
 }

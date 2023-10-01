@@ -5,9 +5,7 @@ use App\models\QueryBuilder;
 
 session_start();
 
-require 'vendor/autoload.php';
-
-$queryBuilder = new QueryBuilder();
+$queryBuilder = new QueryBuilder("CRUD2");
 $auth = new Auth($queryBuilder);
 
 if(isset($_SESSION['user']) === false) {

@@ -4,11 +4,9 @@ use App\Exceptions\NotFoundDataException;
 use App\models\Auth;
 use App\models\QueryBuilder;
 
-require 'vendor/autoload.php';
-
 session_start();
 
-$queryBuilder = new QueryBuilder();
+$queryBuilder = new QueryBuilder("CRUD2");
 $auth = new Auth($queryBuilder);
 
 if(isset($_SESSION['user']) === false) {
