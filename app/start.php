@@ -1,50 +1,34 @@
 <?php
 
-$url = $_SERVER['REQUEST_URI'];
-if($url === '/') {
-    require 'views/sign-up-page.php';
+require '../vendor/autoload.php';
+
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    $r->addRoute('GET', '/main/{id}', ["App\controllers\HomeController", "main"]);
+});
+
+// Fetch method and URI from somewhere
+$httpMethod = $_SERVER['REQUEST_METHOD'];
+$uri = $_SERVER['REQUEST_URI'];
+
+// Strip query string (?foo=bar) and decode URI
+if (false !== $pos = strpos($uri, '?')) {
+    $uri = substr($uri, 0, $pos);
 }
-else if($url === '/main') {
-    require 'views/main-page.php';
+$uri = rawurldecode($uri);
+
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+switch ($routeInfo[0]) {
+    case FastRoute\Dispatcher::NOT_FOUND:
+        var_dump("404 NOT FOUND");
+        die;
+    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+        $allowedMethods = $routeInfo[1];
+        var_dump("405 NOT ALLOWED");
+        die;
+    case FastRoute\Dispatcher::FOUND:
+        $handler = $routeInfo[1];
+        $vars = $routeInfo[2];
+        $container = new \DI\Container();
+        $container->call($handler, $vars);
+        break;
 }
-else if($url === '/log-in') {
-    require 'views/log-in-page.php';
-}
-else if($url === '/register') {
-    require '../vendor/register.php';
-}
-else if($url === '/enter') {
-    require '../vendor/enter.php';
-}
-else if($url === '/logout') {
-    require '../vendor/logout.php';
-}
-else if($url === '/create-task') {
-    require 'views/create-task-page.php';
-}
-else if($url === '/store') {
-    require '../vendor/store-task.php';
-}
-else if($url === '/edit') {
-    require '../vendor/edit-task.php';
-}
-else if(preg_match('/^\/show\/(\d+)$/', $url, $matches)) {
-    $_GET['task_id'] = $matches[1];
-    require 'views/show-page.php';
-}
-else if(preg_match('/^\/edit\/(\d+)$/', $url, $matches)) {
-    $_GET['task_id'] = $matches[1];
-    require 'views/edit-task-page.php';
-}
-else if(preg_match('/^\/edit-task\/(\d+)$/', $url, $matches)) {
-    $_GET['task_id'] = $matches[1];
-    require '../vendor/edit-task.php';
-}
-else if(preg_match('/^\/delete\/(\d+)$/', $url, $matches)) {
-    $_GET['task_id'] = $matches[1];
-    require '../vendor/delete-task.php';
-}
-else {
-    echo 'Error 404';
-}
-exit;
