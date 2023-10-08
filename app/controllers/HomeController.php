@@ -24,7 +24,9 @@ class HomeController {
     public function main() {
         $select = $this->queryFactory->newSelect();
         $select->cols(["*"])
-            ->from('tasks'); //все поля
+            ->from('tasks')
+            ->where('user_id = :user_id')
+            ->bindValue('user_id', $this->auth->getUserId());
 
         // prepare the statement
         $sth = $this->pdo->prepare($select->getStatement());

@@ -22,7 +22,7 @@
         </center>
     </div>
     <center>
-        <div>Еще нет аккаунта? <a href="/signup">Зарегистрироваться</a> </div>
+        <div>Еще нет аккаунта? <a href="/">Зарегистрироваться</a> </div>
     </center>
     <?php
     if (isset($_SESSION['message'])) {
