@@ -1,9 +1,29 @@
 <?php
 
+use Aura\SqlQuery\QueryFactory;
+use DI\ContainerBuilder;
+use League\Plates\Engine;
+
 require '../vendor/autoload.php';
 
+$containerBuilder = new ContainerBuilder();
+$containerBuilder->addDefinitions([
+    Engine::class => function () {
+        return new Engine('../app/views');
+    },
+    //теперь в компоненте HomeController.php в поле view будет храниться new Engine('../app/views')
+    QueryFactory::class => function () {
+        return new QueryFactory('mysql');
+    },
+    PDO::class => function () {
+        return new PDO("mysql:host=localhost; dbname=CRUD2", "root", "");
+    },
+]);
+$container = $containerBuilder->build();
+
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/main/{id}', ["App\controllers\HomeController", "main"]);
+    $r->addRoute('GET', '/main', ["App\controllers\HomeController", "main"]);
+    $r->addRoute('GET', '/show/{task_id}', ["App\controllers\HomeController", "show"]);
 });
 
 // Fetch method and URI from somewhere
@@ -28,7 +48,6 @@ switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-        $container = new \DI\Container();
         $container->call($handler, $vars);
         break;
 }
