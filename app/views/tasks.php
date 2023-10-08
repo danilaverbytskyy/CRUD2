@@ -5,8 +5,10 @@
         <a href="/logout">Log out</a>
         <div class="col-md-12">
             <h1>All Tasks</h1>
-            <a href="/create-task" class="btn btn-success">Add Task</a>
-            <?php echo '<br>' . $_SESSION['message'] ?>
+            <a href="/addTask" class="btn btn-success">Add Task</a>
+            <?php if(isset($_SESSION['message'])): ?>
+                <?php echo '<br>' . $_SESSION['message'] ?>
+            <?php endif;?>
             <table class="table table-striped">
                 <thead>
                 <tr>
