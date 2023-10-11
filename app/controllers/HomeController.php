@@ -2,149 +2,74 @@
 
 namespace App\controllers;
 
+use App\models\Database;
 use Aura\SqlQuery\QueryFactory;
 use Delight\Auth\Auth;
-use Delight\Auth\AuthError;
 use PDO;
 use League\Plates\Engine;
 
 class HomeController {
-    private QueryFactory $queryFactory;
     private Engine $view;
-    private PDO $pdo;
     private Auth $auth;
+    private Database $database;
 
-    public function __construct(Engine $view, QueryFactory $queryFactory, PDO $pdo, Auth $auth) {
-        $this->view = $view; // new Engine('../app/views')
-        $this->queryFactory = $queryFactory;
-        $this->pdo = $pdo;
+    public function __construct(Engine $view, Database $database, Auth $auth) {
+        $this->view = $view;
         $this->auth = $auth;
+        $this->database = $database;
     }
 
-    public function main() {
-        $select = $this->queryFactory->newSelect();
-        $select->cols(["*"])
-            ->from('tasks')
-            ->where('user_id = :user_id')
-            ->bindValue('user_id', $this->auth->getUserId());
-
-        // prepare the statement
-        $sth = $this->pdo->prepare($select->getStatement());
-
-        // bind the values and execute
-        $sth->execute($select->getBindValues());
-
-        // get the results back as an associative array
-        $myTasks = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-        // Render a template
+    public function main() : void {
+        $myTasks = $this->database->all("tasks", $this->auth->getUserId());
         echo $this->view->render('tasks', ['tasks' => $myTasks]);
     }
 
-    public function show($task_id) {
-        $select = $this->queryFactory->newSelect();
-        $select->cols(["*"])
-            ->from('tasks')
-            ->where('task_id = :task_id')
-            ->bindValue('task_id', $task_id); //use the new parameter here
-
-        // prepare the statement
-        $sth = $this->pdo->prepare($select->getStatement());
-
-        // bind the values and execute
-        $sth->execute($select->getBindValues());
-
-        // get the results back as an associative array
-        $myTask = $sth->fetch(PDO::FETCH_ASSOC);
-
-        // Render a template
+    public function show($task_id) : void {
+        $myTask = $this->database->getOne('tasks', $task_id);
         echo $this->view->render('show', ['task' => $myTask]);
     }
 
-    public function edit($task_id) {
-        $select = $this->queryFactory->newSelect();
-        $select->cols(["*"])
-            ->from('tasks')
-            ->where('task_id = :task_id')
-            ->bindValue('task_id', $task_id);
-        $sth = $this->pdo->prepare($select->getStatement());
-        $sth->execute($select->getBindValues());
-        $previousTask = $sth->fetch(PDO::FETCH_ASSOC);
+    public function edit($task_id) : void {
+        $previousTask = $this->database->getOne('tasks', $task_id);
         echo $this->view->render('edit', ['previousTask' => $previousTask]);
     }
 
-    public function update($task_id) {
-        $data = $_POST;
-        $update = $this->queryFactory->newUpdate();
-        $update->table('tasks')
-            ->cols(array_keys($data))
-            ->where('task_id = :task_id')
-            ->bindValue('task_id', $task_id);
-        foreach ($data as $key => $val) {
-            $update->bindValues([$key => $val]);
-        }
-        $sth = $this->pdo->prepare($update->getStatement());
-        $sth->execute($update->getBindValues());
+    public function update($task_id) : void {
+        $this->database->update('tasks', $task_id, $_POST);
         $this->show($task_id);
     }
 
-    public function delete($task_id) {
-        $delete = $this->queryFactory->newDelete();
-        $delete
-            ->from('tasks')
-            ->where('task_id = :task_id')
-            ->bindValue('task_id', $task_id);
-        $sth = $this->pdo->prepare($delete->getStatement());
-        $sth->execute($delete->getBindValues());
+    public function delete($task_id) : void {
+        $this->database->delete('tasks', $task_id);
         $this->main();
     }
 
-    public function logOut() {
-        try {
-            $this->auth->logOut();
-        } catch (AuthError $e) {
-        }
+    public function logOut() : void {
+        $this->auth->logOut();
         $_SESSION['message'] = 'До новых встреч!';
         $this->signUp();
     }
 
-    public function signUp() {
+    public function signUp() : void {
         echo $this->view->render('signup', []);
     }
 
-    public function logIn() {
+    public function logIn() : void {
         echo $this->view->render('login', []);
     }
 
-    public function addTask() {
+    public function addTask() : void {
         echo $this->view->render('addTask', []);
     }
 
-    public function storeTask() {
-        $insert = $this->queryFactory->newInsert();
-        $insert
-            ->into('tasks') // INTO this table
-            ->cols([ // bind values as "(col) VALUES (:col)"
-                'user_id',
-                'title',
-                'content'
-            ])
-            ->bindValues([ // bind these values
-                'user_id' => $this->auth->getUserId(),
-                'title' => $_POST['title'],
-                'content' => $_POST['content']
-            ]);
-
-        // prepare the statement
-        $sth = $this->pdo->prepare($insert->getStatement());
-
-        // bind the values and execute
-        $sth->execute($insert->getBindValues());
-
+    public function storeTask() : void {
+        $data = $_POST;
+        $data['user_id'] = $this->auth->getUserId();
+        $this->database->store('tasks', $data);
         $this->main();
     }
 
-    public function register() {
+    public function register() : void {
         try {
             $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['name'], function ($selector, $token) {
                 $this->auth->confirmEmail(urldecode($selector), urldecode($token));
@@ -166,7 +91,7 @@ class HomeController {
         }
     }
 
-    public function enter() {
+    public function enter() : void {
         try {
             $this->auth->login($_POST['email'], $_POST['password']);
             $_SESSION['user'] = [
